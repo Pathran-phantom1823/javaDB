@@ -37,7 +37,6 @@ public class DBCheck {
         Class.forName("com.mysql.jdbc.Driver");
         System.out.println("Connecting to database...");
         conn = (Connection) DriverManager.getConnection(DB_URL, USER, PASS);
-
     }
 
     public void account(String username, String password) {
@@ -60,6 +59,7 @@ public class DBCheck {
         String sql = "SELECT AccID, Username, Password FROM account";
         ResultSet rs = stmt.executeQuery(sql);
         //STEP 5: Extract data from result set
+        System.out.println("\nACCOUNTS\n\n");
         while (rs.next()) {
             //Retrieve by column name
             int id = rs.getInt("AccID");
@@ -138,28 +138,119 @@ public class DBCheck {
     }
 
     //PERSONALINFORMATION
-    public void accountPerson(int id) throws SQLException {
+    public void personCreate(int id) throws SQLException {
         if (checkID(id)) {
             info.firstnameValidation();
             info.lastnameValidation();
             info.ageVal();
             try {
-                System.out.println("CREATING ACCOUNT...");
+                System.out.println("CREATING PERSONAL INFO...");
                 stmt = (Statement) conn.createStatement();
                 String sql;
                 sql = "INSERT INTO personalinfo (AccID, Firstname, Lastname, Age) "
                         + "VALUES (" + id + ",\'" + info.getFirstname() + "\'"
                         + ",\'" + info.getLastname() + "\'," + info.getAge() + ")";
                 stmt.executeUpdate(sql);
-                System.out.println("Account Successfully created!");
+                System.out.println("Personal Info Successfully created!");
                 stmt.close();
             } catch (SQLException ex) {
-                System.out.println("\033[0;1m" + ex.getLocalizedMessage());
+                System.out.println("Oppsss! .." + "\033[0;1m" + ex.getLocalizedMessage());
             }
         } else {
             System.out.println("\033[0;1m" + "ACCOUNT ID NOT FOUND!");
         }
     }
+
+    public void personRetrieve() throws SQLException {
+        stmt = (Statement) conn.createStatement();
+        String sql = "SELECT PersonID, AccID, Firstname, "
+                + "Lastname, Age FROM personalinfo";
+        ResultSet rs = stmt.executeQuery(sql);
+        //STEP 5: Extract data from result set
+        System.out.println("\nPERSONAL INFORMATION\n\n");
+        while (rs.next()) {
+            //Retrieve by column name
+            int personid = rs.getInt("PersonID");
+            int id = rs.getInt("AccID");
+            String fname = rs.getString("Firstname");
+            String lname = rs.getString("Lastname");
+            int age = rs.getInt("Age");
+
+            //Display values
+            System.out.printf("PersonID: %-12s ", id);
+            System.out.printf("AccID: %-12s ", id);
+            System.out.printf("|FIRSTNAME: %-12s ", fname);
+            System.out.printf("|LASTNAME: %-12s ", lname);
+            System.out.printf("|AGE: %-12s ", age);
+            System.out.println();
+        }
+        rs.close();
+    }
+
+    public boolean checkIDinPI(int accid) throws SQLException {
+        stmt = (Statement) conn.createStatement();
+        String sql = "SELECT AccID FROM personalinfo";
+        ResultSet rs = stmt.executeQuery(sql);
+        boolean flag = false;
+        while (rs.next()) {
+            int id = rs.getInt("AccID");
+            if (id == accid) {
+                flag = true;
+                break;
+            }
+        }
+        rs.close();
+        return flag;
+    }
+
+    public void personUpdate(int id) throws SQLException {
+        if (checkID(id)) {
+            if (checkIDinPI(id)) {
+                info.firstnameValidation();
+                info.lastnameValidation();
+                info.ageVal();
+                try {
+                    stmt = (Statement) conn.createStatement();
+                    String sql = "UPDATE personalinfo "
+                            + "SET Firstname = " + "\'" + info.getFirstname() + "\'" + ", Lastname = " + "\'" + info.getLastname() + "\', Age = " + info.getAge() + " WHERE AccID = " + id;
+                    stmt.executeUpdate(sql);
+                    System.out.println("Updated Succesfully!");
+                    stmt.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getLocalizedMessage());;
+                }
+            } else {
+                System.out.println("\nAccount ID not in personal info. \nCreate account!\n");
+            }
+        } else {
+            System.out.println("ID NOT FOUND!");
+        }
+    }
+
+    public void personDelete(int id) throws SQLException {
+        if (checkID(id)) {
+            if (checkIDinPI(id)) {
+                try {
+                    stmt = (Statement) conn.createStatement();
+                    String sql = "DELETE FROM personalinfo "
+                            + "WHERE AccID = " + id;
+                    stmt.executeUpdate(sql);
+                    System.out.println("\nPersonal info deleted Succesfully!");
+                    stmt.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getLocalizedMessage());;
+                }
+            }
+        } else {
+            System.out.println("ID NOT FOUND!");
+        }
+    }
+    
+    
+    // Schedule
+    
+    
+    
 
     public void close() throws SQLException {
         conn.close();

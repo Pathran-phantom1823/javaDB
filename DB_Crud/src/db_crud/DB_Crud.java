@@ -24,11 +24,13 @@ public class DB_Crud {
         //CreateAccount
 //        account.checkUsername();
 //        account.passValidation();
+
 //        db.account(account.getUsername(), account.getPassword());        
-//        db.accountRetrieve();
+        db.accountRetrieve();
 //        db.accountSearch(7);
-//       db.accountRetrieve();
-        db.accountPerson(0);
+        //db.personRetrieve();
+        db.personUpdate(4);
+        db.personRetrieve();
         db.close();
     }
 }
