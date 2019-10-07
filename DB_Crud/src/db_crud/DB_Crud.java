@@ -19,6 +19,7 @@ public class DB_Crud {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         DBCheck db = new DBCheck();
         Account account = new Account();
+        PersonalInformation info = new PersonalInformation();
         db.connection();
         //CreateAccount
 //        account.checkUsername();
@@ -27,6 +28,7 @@ public class DB_Crud {
 //        db.accountRetrieve();
 //        db.accountSearch(7);
 //       db.accountRetrieve();
+        db.accountPerson(0);
         db.close();
     }
 }

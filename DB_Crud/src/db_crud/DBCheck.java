@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 public class DBCheck {
 
     Account acc = new Account();
+    PersonalInformation info = new PersonalInformation();
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     static final String DB_URL = "jdbc:mysql://localhost/users";
@@ -133,6 +134,30 @@ public class DBCheck {
             }
         } else {
             System.out.println("ID NOT FOUND!");
+        }
+    }
+
+    //PERSONALINFORMATION
+    public void accountPerson(int id) throws SQLException {
+        if (checkID(id)) {
+            info.firstnameValidation();
+            info.lastnameValidation();
+            info.ageVal();
+            try {
+                System.out.println("CREATING ACCOUNT...");
+                stmt = (Statement) conn.createStatement();
+                String sql;
+                sql = "INSERT INTO personalinfo (AccID, Firstname, Lastname, Age) "
+                        + "VALUES (" + id + ",\'" + info.getFirstname() + "\'"
+                        + ",\'" + info.getLastname() + "\'," + info.getAge() + ")";
+                stmt.executeUpdate(sql);
+                System.out.println("Account Successfully created!");
+                stmt.close();
+            } catch (SQLException ex) {
+                System.out.println("\033[0;1m" + ex.getLocalizedMessage());
+            }
+        } else {
+            System.out.println("\033[0;1m" + "ACCOUNT ID NOT FOUND!");
         }
     }
 
