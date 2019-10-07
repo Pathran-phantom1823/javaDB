@@ -255,11 +255,11 @@ public class DBCheck {
                 System.out.println("CREATING PERSONAL INFO...");
                 stmt = (Statement) conn.createStatement();
                 String sql;
-                sql = "INSERT INTO course (AccID, Firstname, Lastname, Age) "
-                        + "VALUES (" + id + ",\'" + info.getFirstname() + "\'"
-                        + ",\'" + info.getLastname() + "\'," + info.getAge() + ")";
+                sql = "INSERT INTO courses (AccID, Title, Unit, Schedule) "
+                        + "VALUES (" + id + ",\'" + course.getTitle() + "\'"
+                        + ",\'" + course.getUnits() + "\'" + ",\'" + course.getSchedule() + "')";
                 stmt.executeUpdate(sql);
-                System.out.println("Personal Info Successfully created!");
+                System.out.println("Schedule Successfully created!");
                 stmt.close();
             } catch (SQLException ex) {
                 System.out.println("Oppsss! .." + "\033[0;1m" + ex.getLocalizedMessage());
@@ -268,6 +268,93 @@ public class DBCheck {
             System.out.println("\033[0;1m" + "ACCOUNT ID NOT FOUND!");
         }
     }
+    
+    public void courseRetrieve() throws SQLException {
+        stmt = (Statement) conn.createStatement();
+        String sql = "SELECT ScheduleID, AccID, Title, "
+                + "Unit, Schedule FROM courses";
+        ResultSet rs = stmt.executeQuery(sql);
+        //STEP 5: Extract data from result set
+        System.out.println("\nCOURSES\n\n");
+        while (rs.next()) {
+            //Retrieve by column name
+            int sid = rs.getInt("ScheduleID");
+            int id = rs.getInt("AccID");
+            String title = rs.getString("Title");
+            int unit = rs.getInt("Unit");
+            String schedule = rs.getString("Schedule");
+
+            //Display values
+            System.out.printf("ScheduleID: %-12s ", sid);
+            System.out.printf("AccID: %-12s ", id);
+            System.out.printf("|TITLE: %-12s ", title);
+            System.out.printf("|UNIT: %-12s ", unit);
+            System.out.printf("|SCHEDULE: %-12s ", schedule);
+            System.out.println();
+        }
+        rs.close();
+    }
+    
+    public boolean checkIDinC(int accid) throws SQLException {
+        stmt = (Statement) conn.createStatement();
+        String sql = "SELECT AccID FROM courses";
+        ResultSet rs = stmt.executeQuery(sql);
+        boolean flag = false;
+        while (rs.next()) {
+            int id = rs.getInt("AccID");
+            if (id == accid) {
+                flag = true;
+                break;
+            }
+        }
+        rs.close();
+        return flag;
+    }
+    
+    public void courseUpdate(int id) throws SQLException {
+        if (checkID(id)) {
+            if (checkIDinC(id)) {
+                course.addSchedule();
+                try {
+                    stmt = (Statement) conn.createStatement();
+                    String sql = "UPDATE courses "
+                            + "SET Title = " + "\'" + course.getTitle() + "\'" 
+                            + ", Unit = " + "\'" + course.getUnits()
+                            + "\' ,Schedule = \'" + course.getSchedule() 
+                            + "\' WHERE AccID = " + id;
+                    stmt.executeUpdate(sql);
+                    System.out.println("Updated Succesfully!");
+                    stmt.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getLocalizedMessage());;
+                }
+            } else {
+                System.out.println("\nAccount ID not in courses. \nCreate account!\n");
+            }
+        } else {
+            System.out.println("ID NOT FOUND!");
+        }
+    }
+    
+    public void courseDelete(int id) throws SQLException {
+        if (checkID(id)) {
+            if (checkIDinC(id)) {
+                try {
+                    stmt = (Statement) conn.createStatement();
+                    String sql = "DELETE FROM courses "
+                            + "WHERE AccID = " + id;
+                    stmt.executeUpdate(sql);
+                    System.out.println("\nCourse deleted Succesfully!");
+                    stmt.close();
+                } catch (SQLException ex) {
+                    System.out.println(ex.getLocalizedMessage());;
+                }
+            }
+        } else {
+            System.out.println("ID NOT FOUND!");
+        }
+    }
+    
 
     public void close() throws SQLException {
         conn.close();
