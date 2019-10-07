@@ -22,6 +22,7 @@ public class DBCheck {
 
     Account acc = new Account();
     PersonalInformation info = new PersonalInformation();
+    Course course = new Course();
 
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     static final String DB_URL = "jdbc:mysql://localhost/users";
@@ -245,12 +246,28 @@ public class DBCheck {
             System.out.println("ID NOT FOUND!");
         }
     }
-    
-    
+
     // Schedule
-    
-    
-    
+    public void courseCreate(int id) throws SQLException {
+        if (checkID(id)) {
+            course.addSchedule();
+            try {
+                System.out.println("CREATING PERSONAL INFO...");
+                stmt = (Statement) conn.createStatement();
+                String sql;
+                sql = "INSERT INTO course (AccID, Firstname, Lastname, Age) "
+                        + "VALUES (" + id + ",\'" + info.getFirstname() + "\'"
+                        + ",\'" + info.getLastname() + "\'," + info.getAge() + ")";
+                stmt.executeUpdate(sql);
+                System.out.println("Personal Info Successfully created!");
+                stmt.close();
+            } catch (SQLException ex) {
+                System.out.println("Oppsss! .." + "\033[0;1m" + ex.getLocalizedMessage());
+            }
+        } else {
+            System.out.println("\033[0;1m" + "ACCOUNT ID NOT FOUND!");
+        }
+    }
 
     public void close() throws SQLException {
         conn.close();
