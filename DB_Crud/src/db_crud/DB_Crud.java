@@ -39,18 +39,18 @@ public class DB_Crud {
                             choice = input.nextInt();
                             switch (choice) {
                                 case 1://create account
-                                    System.out.println("CREATE ACCOUNT\n");
+                                    System.out.println("==========CREATE ACCOUNT==============\n");
                                     account.checkUsername();
                                     account.passValidation();
                                     db.account(account.getUsername(), account.getPassword());
                                 case 2://personalInfo
-                                    System.out.println("CREATE PERSONAL INFORMATION\n");
+                                    System.out.println("===========CREATE PERSONAL INFORMATION========\n");
                                     System.out.print("ACCOUNT ID: ");
                                     choice = input.nextInt();
                                     db.personCreate(choice);
                                     break;
                                 case 3: //schedule
-                                    System.out.println("CREATE SCHEDULE\n");
+                                    System.out.println("=========CREATE SCHEDULE============\n");
                                     System.out.print("ACCOUNT ID: ");
                                     choice = input.nextInt();
                                     db.courseCreate(choice);
@@ -118,15 +118,15 @@ public class DB_Crud {
     }
 
     public static void displayMenu() {
-        System.out.println("\nWelcome\n\n[1] Create\n[2] Retrieve\n[3] Update\n[4] Delete\n[5] Exit\n\n");
+        System.out.println("\nWelcome\n\nEnter [1] Create\nEnter [2] Retrieve\nEnter [3] Update\nEnter [4] Delete\nEnter [5] Exit\n\n");
     }
 
     public static void retrieve() {
-        System.out.println("\n[1] Personal Information\n[2] Subject\n\n");
+        System.out.println("\nEnter [1] Personal Information\nEnter [2] Subject\n\n");
     }
 
     public static void retrieveAll() {
-        System.out.println("\n[1] Account\n[2] Personal Information\n[3] Subject\n\n");
+        System.out.println("\nEnter [1] Account\nEnter [2] Personal Information\nEnter [3] Subject\n\n");
     }
 
 }
